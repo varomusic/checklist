@@ -3,10 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Checklist diaria</title>
+  <title>CheckBlast 360</title>
   <style>
     :root {
-      color-scheme: light;
+      --bg-dark: #0f172a;
+      --bg-blue: #1d4ed8;
+      --bg-cyan: #06b6d4;
+      --bg-purple: #7c3aed;
+      --panel: rgba(255,255,255,.92);
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #dbeafe;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --shadow: 0 18px 45px rgba(15,23,42,.18);
     }
 
     * {
@@ -14,192 +25,370 @@
     }
 
     body {
+      margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      background:
-        linear-gradient(135deg, #0f172a 0%, #1d4ed8 35%, #06b6d4 70%, #e0f2fe 100%);
-      color: #0f172a;
+      color: var(--text);
       min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(15,23,42,.88) 0%, rgba(29,78,216,.72) 35%, rgba(6,182,212,.52) 70%, rgba(224,242,254,.82) 100%),
+        url("background.png") center center / cover no-repeat fixed;
     }
 
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 28px 16px 48px;
+    /* SPLASH */
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.35),
+        rgba(37, 99, 235, 0.22),
+        rgba(6, 182, 212, 0.18)
+      );
+      transition: opacity .45s ease, visibility .45s ease;
     }
 
-    header {
-      background: rgba(255, 255, 255, 0.96);
+    .splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-stage {
+  width: min(100%, 980px);
+  height: min(100vh - 20px, 920px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(18,30,61,.28), rgba(13,148,136,.14));
+  box-shadow: 0 24px 80px rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.splash-bg-blur {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(18px) brightness(0.9);
+  transform: scale(1.08);
+  opacity: 0.9;
+}
+
+.splash-bg-main {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 2;
+}
+
+.splash-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.02),
+    rgba(0,0,0,0.10)
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+    .splash-content {
+      position: absolute;
+      left: 50%;
+      bottom: 44px;
+      transform: translateX(-50%);
+      width: min(90%, 560px);
+      text-align: center;
+      color: white;
+      background: linear-gradient(
+        135deg,
+        rgba(37, 99, 235, 0.18),
+        rgba(124, 58, 237, 0.16),
+        rgba(6, 182, 212, 0.14)
+      );
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.16);
       border-radius: 22px;
-      padding: 22px 20px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-      margin-bottom: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.65);
+      padding: 14px 18px 14px;
+      box-shadow: 0 12px 34px rgba(15, 23, 42, 0.18);
     }
 
-    h1 {
-      font-size: 28px;
+    .splash-content h1 {
       margin: 0 0 6px;
-      color: #0f172a;
+      font-size: 34px;
+      line-height: 1.05;
+      text-shadow: 0 4px 20px rgba(0,0,0,.28);
     }
 
-    header p {
+    .splash-content p {
       margin: 0;
-      opacity: 0.85;
-      font-size: 15px;
+      font-size: 14px;
+      line-height: 1.35;
+      opacity: .97;
+      text-shadow: 0 2px 10px rgba(0,0,0,.18);
     }
 
-    .grid {
+    .splash-content .author {
+      margin-top: 10px;
+      font-size: 13px;
+      letter-spacing: .3px;
+    }
+
+.enter-btn {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  opacity: 0.9;
+  z-index: 3;
+}
+
+    .enter-btn:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.26);
+    }
+
+    /* APP */
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 16px 50px;
+    }
+
+    .topbar {
+      background: rgba(255,255,255,.92);
+      border-radius: 24px;
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.55);
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .topbar p {
+      margin: 0;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .top-actions {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: .18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      opacity: .96;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      box-shadow: 0 10px 20px rgba(37,99,235,.22);
+    }
+
+    .btn-secondary {
+      color: #1e293b;
+      background: #eef2ff;
+      border: 1px solid #dbe4ff;
+    }
+
+    .btn-danger {
+      color: white;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .btn-purple {
+      color: white;
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      box-shadow: 0 10px 20px rgba(124,58,237,.22);
+    }
+
+    .boards {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 18px;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.97);
-      border-radius: 22px;
+    .board {
+      background: rgba(255,255,255,.94);
+      border-radius: 24px;
       padding: 18px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.62);
       backdrop-filter: blur(8px);
     }
 
-    .card.work {
-      background: linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(219,234,254,0.96) 100%);
+    .board.work {
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(219,234,254,.96));
     }
 
-    .card.personal {
-      background: linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(237,233,254,0.96) 100%);
+    .board.personal {
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(237,233,254,.96));
     }
 
-    .section-title {
-      display: inline-block;
-      margin: 0 0 14px;
-      font-size: 20px;
-      font-weight: 700;
-      padding: 10px 14px;
-      border-radius: 14px;
+    .board-top {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .board-top .toggle {
+      flex: 1;
+      text-align: left;
+      font-size: 18px;
+      padding: 14px 18px;
+      border-radius: 16px;
+    }
+
+    .board.work .toggle {
       color: white;
-      box-shadow: 0 10px 22px rgba(0,0,0,.12);
-    }
-
-    .work .section-title {
       background: linear-gradient(135deg, #2563eb, #06b6d4);
     }
 
-    .personal .section-title {
+    .board.personal .toggle {
+      color: white;
       background: linear-gradient(135deg, #7c3aed, #3b82f6);
     }
 
-    form {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
+    .board-content.hidden {
+      display: none;
     }
 
-    input[type="text"] {
-      flex: 1;
-      min-width: 220px;
-      padding: 12px 14px;
+    .form-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(320px, 2.6fr)
+        minmax(110px, .7fr)
+        minmax(180px, 1fr)
+        minmax(180px, 1fr)
+        minmax(120px, .8fr)
+        auto;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+
+    .field,
+    .form-grid input {
+      width: 100%;
+      min-width: 0;
+      padding: 14px 14px;
       border-radius: 14px;
       border: 1px solid #dbe4f0;
       outline: none;
       font-size: 15px;
-      background: #ffffff;
-      transition: 0.2s ease;
-    }
-
-    input[type="text"]:focus {
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.18);
-    }
-
-    button {
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 0;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
       font-weight: 600;
-      white-space: nowrap;
-      transition: transform 0.15s ease, opacity 0.2s ease;
+      background: white;
+      color: #0f172a;
     }
 
-    button:hover {
-      opacity: 0.94;
+    .field::placeholder,
+    .form-grid input::placeholder {
+      color: #94a3b8;
+      font-weight: 500;
     }
 
-    button:active {
-      transform: translateY(1px);
+    input:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96,165,250,.16);
     }
 
-    .work form button[type="submit"] {
-      background: linear-gradient(135deg, #2563eb, #06b6d4);
-    }
-
-    .personal form button[type="submit"] {
-      background: linear-gradient(135deg, #7c3aed, #3b82f6);
-    }
-
-    button.secondary {
-      background: #eef2ff;
-      color: #1e293b;
-      border: 1px solid #dbe4ff;
+    input[type="number"] {
+      text-align: center;
     }
 
     .meta {
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 10px;
       align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: #334155;
+      margin-bottom: 14px;
     }
 
-    .meta .actions {
+    .badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .work .badge {
+      background: rgba(37,99,235,.1);
+      color: #1d4ed8;
+    }
+
+    .personal .badge {
+      background: rgba(124,58,237,.1);
+      color: #6d28d9;
+    }
+
+    .meta-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .counter-badge {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .work .counter-badge {
-      background: rgba(37, 99, 235, 0.1);
-      color: #1d4ed8;
-    }
-
-    .personal .counter-badge {
-      background: rgba(124, 58, 237, 0.1);
-      color: #6d28d9;
-    }
-
     ul {
-      list-style: none;
-      padding: 0;
       margin: 0;
+      padding: 0;
+      list-style: none;
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
 
     .item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.9);
-      border: 1px solid #e5edf7;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+      background: rgba(255,255,255,.90);
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid #e6eef8;
+      box-shadow: 0 7px 18px rgba(15,23,42,.06);
+      display: grid;
+      gap: 10px;
     }
 
     .work .item {
@@ -210,170 +399,338 @@
       border-left: 5px solid #7c3aed;
     }
 
-    .item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #2563eb;
-      cursor: pointer;
+    .item.done {
+      opacity: .72;
+    }
+
+    .item.done .task-title {
+      text-decoration: line-through;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .priority {
+      min-width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .work .priority {
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+    }
+
+    .personal .priority {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
       flex-shrink: 0;
     }
 
-    .personal .item input[type="checkbox"] {
-      accent-color: #7c3aed;
-    }
-
-    .text {
+    .task-main {
       flex: 1;
-      font-size: 15px;
-      line-height: 1.3;
+      min-width: 180px;
+    }
+
+    .task-title {
+      font-size: 18px;
+      font-weight: 800;
       color: #0f172a;
-      word-break: break-word;
     }
 
-    .done .text {
-      text-decoration: line-through;
-      opacity: .55;
-    }
-
-    .del {
-      border: 0;
-      background: #f8fafc;
-      color: #64748b;
-      cursor: pointer;
+    .task-sub {
+      margin-top: 4px;
       font-size: 13px;
-      font-weight: 600;
-      padding: 8px 10px;
-      border-radius: 10px;
+      color: #64748b;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .del:hover {
-      background: #e2e8f0;
-    }
-
-    .hint {
-      margin-top: 14px;
+    .countdown {
+      padding: 5px 10px;
+      border-radius: 999px;
       font-size: 12px;
-      color: #475569;
-      background: rgba(255,255,255,0.55);
+      font-weight: 800;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .countdown.overdue {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .countdown.soon {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      border: 0;
+      cursor: pointer;
       padding: 10px 12px;
       border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .mini-edit {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .mini-delete {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .mini-alarm {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .hint,
+    .signature {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #475569;
     }
 
     .signature {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 13px;
-      color: #334155;
-      font-weight: 500;
+      border-top: 1px solid rgba(148,163,184,.25);
       padding-top: 12px;
-      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      text-align: center;
+      font-weight: 600;
     }
 
-    .signature strong {
-      color: #0f172a;
+    .empty {
+      padding: 18px 12px;
+      text-align: center;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      color: #64748b;
+      background: rgba(255,255,255,.5);
     }
 
-    @media (max-width: 860px) {
-      .grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 980px) {
+      .form-grid {
+        grid-template-columns: 1fr 120px;
       }
 
-      h1 {
-        font-size: 24px;
+      .form-grid .add-btn {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 16px 12px 34px;
       }
 
-      .wrap {
-        padding: 20px 14px 36px;
+      .topbar h1 {
+        font-size: 26px;
+      }
+
+      .splash-stage {
+        height: min(100vh - 20px, 820px);
+      }
+
+      .splash-content {
+        width: min(94%, 520px);
+        bottom: 36px;
+      }
+
+      .splash-content h1 {
+        font-size: 28px;
+      }
+
+      .board-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .board-top .toggle,
+      .board-top .btn-secondary {
+        width: 100%;
+      }
+
+      .meta {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .meta-actions {
+        width: 100%;
+      }
+
+      .meta-actions .btn {
+        flex: 1;
       }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Checklist diaria</h1>
-      <p>Administra tus tareas de trabajo y personales. Todo se guarda automáticamente en este dispositivo.</p>
-    </header>
+  <div id="splash" class="splash">
+    <div class="splash-stage">
+      <img class="splash-bg-blur" src="background.png" alt="Fondo difuminado">
+<div class="splash-overlay"></div>
+<img class="splash-bg-main" src="background.png" alt="Fondo principal">
 
-    <div class="grid">
-      <!-- CHECKLIST TRABAJO -->
-      <div class="card work">
-        <h2 class="section-title">Checklist trabajo</h2>
 
-        <form id="addFormWork" autocomplete="off">
-          <input id="taskInputWork" type="text" placeholder="Escribe una tarea de trabajo..." />
-          <button type="submit">Agregar</button>
-        </form>
-
-        <div class="meta">
-          <div id="counterWork" class="counter-badge">0 pendientes</div>
-          <div class="actions">
-            <button class="secondary" id="clearDoneWork" type="button">Borrar completados</button>
-            <button class="secondary" id="clearAllWork" type="button">Borrar todo</button>
-          </div>
-        </div>
-
-        <ul id="listWork"></ul>
-
-        <div class="hint">
-          Tip: aquí puedes registrar tus actividades laborales del día y marcarlas a medida que las completes.
-        </div>
-
-        <div class="signature">
-          Desarrollado por <strong>Alvaro Ariza</strong>
-        </div>
-      </div>
-
-      <!-- CHECKLIST PERSONAL -->
-      <div class="card personal">
-        <h2 class="section-title">Checklist personal</h2>
-
-        <form id="addFormPersonal" autocomplete="off">
-          <input id="taskInputPersonal" type="text" placeholder="Escribe una tarea personal..." />
-          <button type="submit">Agregar</button>
-        </form>
-
-        <div class="meta">
-          <div id="counterPersonal" class="counter-badge">0 pendientes</div>
-          <div class="actions">
-            <button class="secondary" id="clearDonePersonal" type="button">Borrar completados</button>
-            <button class="secondary" id="clearAllPersonal" type="button">Borrar todo</button>
-          </div>
-        </div>
-
-        <ul id="listPersonal"></ul>
-
-        <div class="hint">
-          Tip: usa esta lista para tus pendientes personales, recordatorios y actividades fuera del trabajo.
-        </div>
-
-        <div class="signature">
-          Desarrollado por <strong>Alvaro Ariza</strong>
-        </div>
-      </div>
+      <button class="enter-btn" id="enterApp">ENTRAR</button>
     </div>
   </div>
 
+  <main class="app">
+    <section class="topbar">
+      <h1>CheckBlast 360</h1>
+      <p>
+        Gestiona tareas de trabajo y personales con prioridad numérica, fecha, hora,
+        temporizador, edición y recordatorios.
+      </p>
+
+      <div class="top-actions">
+        <button class="btn btn-primary" id="enableNotifications">Activar notificaciones</button>
+      </div>
+    </section>
+
+    <section class="boards">
+      <div class="board work">
+        <div class="board-top">
+          <button class="btn toggle" id="toggleWork">Checklist de trabajo</button>
+          <button class="btn btn-secondary" id="renameWork">Editar botón</button>
+        </div>
+
+        <div class="board-content" id="contentWork">
+          <div class="form-grid">
+            <input class="field" id="taskInputWork" type="text" placeholder="Escribe una tarea de trabajo..." />
+            <input class="field" id="priorityWork" type="number" min="1" placeholder="N°" />
+            <input class="field" id="dateWork" type="date" />
+            <input class="field" id="timeWork" type="time" />
+            <input class="field" id="timerWork" type="number" min="1" placeholder="Min" />
+            <button class="btn btn-primary add-btn" id="addWork">Agregar</button>
+          </div>
+
+          <div class="meta">
+            <div class="badge" id="counterWork">0 pendientes</div>
+            <div class="meta-actions">
+              <button class="btn btn-secondary" id="clearDoneWork">Borrar completados</button>
+              <button class="btn btn-danger" id="clearAllWork">Borrar todo</button>
+            </div>
+          </div>
+
+          <ul id="listWork"></ul>
+
+          <div class="hint">
+            Usa N° para la prioridad. Menor número = mayor prioridad.
+            Puedes usar fecha/hora o temporizador en minutos.
+          </div>
+
+          <div class="signature">Desarrollado por <strong>Alvaro Ariza</strong></div>
+        </div>
+      </div>
+
+      <div class="board personal">
+        <div class="board-top">
+          <button class="btn toggle" id="togglePersonal">Checklist personal</button>
+          <button class="btn btn-secondary" id="renamePersonal">Editar botón</button>
+        </div>
+
+        <div class="board-content hidden" id="contentPersonal">
+          <div class="form-grid">
+            <input class="field" id="taskInputPersonal" type="text" placeholder="Escribe una tarea personal..." />
+            <input class="field" id="priorityPersonal" type="number" min="1" placeholder="N°" />
+            <input class="field" id="datePersonal" type="date" />
+            <input class="field" id="timePersonal" type="time" />
+            <input class="field" id="timerPersonal" type="number" min="1" placeholder="Min" />
+            <button class="btn btn-purple add-btn" id="addPersonal">Agregar</button>
+          </div>
+
+          <div class="meta">
+            <div class="badge" id="counterPersonal">0 pendientes</div>
+            <div class="meta-actions">
+              <button class="btn btn-secondary" id="clearDonePersonal">Borrar completados</button>
+              <button class="btn btn-danger" id="clearAllPersonal">Borrar todo</button>
+            </div>
+          </div>
+
+          <ul id="listPersonal"></ul>
+
+          <div class="hint">
+            También puedes usar esta lista para recordatorios y tareas repetitivas del día.
+          </div>
+
+          <div class="signature">Desarrollado por <strong>Alvaro Ariza</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <script>
-    const STORAGE_KEY_WORK = "checklist_trabajo_v1";
-    const STORAGE_KEY_PERSONAL = "checklist_personal_v1";
+    const STORAGE = {
+      workItems: "checkblast360_work_items_v5",
+      personalItems: "checkblast360_personal_items_v5",
+      workLabel: "checkblast360_work_label_v5",
+      personalLabel: "checkblast360_personal_label_v5"
+    };
 
-    const addFormWork = document.getElementById("addFormWork");
-    const taskInputWork = document.getElementById("taskInputWork");
-    const listWork = document.getElementById("listWork");
-    const counterWork = document.getElementById("counterWork");
-    const clearDoneWorkBtn = document.getElementById("clearDoneWork");
-    const clearAllWorkBtn = document.getElementById("clearAllWork");
+    let workItems = load(STORAGE.workItems);
+    let personalItems = load(STORAGE.personalItems);
 
-    const addFormPersonal = document.getElementById("addFormPersonal");
-    const taskInputPersonal = document.getElementById("taskInputPersonal");
-    const listPersonal = document.getElementById("listPersonal");
-    const counterPersonal = document.getElementById("counterPersonal");
-    const clearDonePersonalBtn = document.getElementById("clearDonePersonal");
-    const clearAllPersonalBtn = document.getElementById("clearAllPersonal");
+    const els = {
+      splash: document.getElementById("splash"),
+      enterApp: document.getElementById("enterApp"),
 
-    let workItems = load(STORAGE_KEY_WORK);
-    let personalItems = load(STORAGE_KEY_PERSONAL);
+      enableNotifications: document.getElementById("enableNotifications"),
+
+      toggleWork: document.getElementById("toggleWork"),
+      renameWork: document.getElementById("renameWork"),
+      contentWork: document.getElementById("contentWork"),
+      taskInputWork: document.getElementById("taskInputWork"),
+      priorityWork: document.getElementById("priorityWork"),
+      dateWork: document.getElementById("dateWork"),
+      timeWork: document.getElementById("timeWork"),
+      timerWork: document.getElementById("timerWork"),
+      addWork: document.getElementById("addWork"),
+      listWork: document.getElementById("listWork"),
+      counterWork: document.getElementById("counterWork"),
+      clearDoneWork: document.getElementById("clearDoneWork"),
+      clearAllWork: document.getElementById("clearAllWork"),
+
+      togglePersonal: document.getElementById("togglePersonal"),
+      renamePersonal: document.getElementById("renamePersonal"),
+      contentPersonal: document.getElementById("contentPersonal"),
+      taskInputPersonal: document.getElementById("taskInputPersonal"),
+      priorityPersonal: document.getElementById("priorityPersonal"),
+      datePersonal: document.getElementById("datePersonal"),
+      timePersonal: document.getElementById("timePersonal"),
+      timerPersonal: document.getElementById("timerPersonal"),
+      addPersonal: document.getElementById("addPersonal"),
+      listPersonal: document.getElementById("listPersonal"),
+      counterPersonal: document.getElementById("counterPersonal"),
+      clearDonePersonal: document.getElementById("clearDonePersonal"),
+      clearAllPersonal: document.getElementById("clearAllPersonal")
+    };
 
     function uid() {
       return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -388,144 +745,388 @@
       }
     }
 
-    function save(key, items) {
-      localStorage.setItem(key, JSON.stringify(items));
+    function save(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
     }
 
-    function renderList(items, listElement, counterElement, type) {
-      listElement.innerHTML = "";
+    function parseDueAt(dateValue, timeValue, timerMinutes) {
+      if (timerMinutes && Number(timerMinutes) > 0) {
+        return Date.now() + Number(timerMinutes) * 60000;
+      }
 
-      items.forEach((it) => {
+      if (dateValue && timeValue) {
+        const d = new Date(`${dateValue}T${timeValue}`);
+        if (!isNaN(d.getTime())) return d.getTime();
+      }
+
+      return null;
+    }
+
+    function formatDateTime(ts) {
+      if (!ts) return "Sin fecha";
+      const d = new Date(ts);
+      return d.toLocaleString("es-CO", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatRemaining(ts) {
+      if (!ts) return { text: "Sin alarma", className: "" };
+
+      const diff = ts - Date.now();
+
+      if (diff <= 0) {
+        const lateMin = Math.floor(Math.abs(diff) / 60000);
+        return {
+          text: lateMin < 1 ? "Vencida" : `Vencida hace ${lateMin} min`,
+          className: "overdue"
+        };
+      }
+
+      const totalSec = Math.floor(diff / 1000);
+      const days = Math.floor(totalSec / 86400);
+      const hours = Math.floor((totalSec % 86400) / 3600);
+      const mins = Math.floor((totalSec % 3600) / 60);
+
+      let text = "";
+      if (days > 0) text = `${days}d ${hours}h`;
+      else if (hours > 0) text = `${hours}h ${mins}m`;
+      else text = `${mins}m`;
+
+      const soon = diff <= 3600000;
+      return { text: `Faltan ${text}`, className: soon ? "soon" : "" };
+    }
+
+    function sortItems(items) {
+      return [...items].sort((a, b) => {
+        const pa = Number(a.priority || 9999);
+        const pb = Number(b.priority || 9999);
+        if (pa !== pb) return pa - pb;
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+    }
+
+    function renderList(type, items, listEl, counterEl) {
+      listEl.innerHTML = "";
+
+      const sorted = sortItems(items);
+
+      if (!sorted.length) {
+        listEl.innerHTML = `<div class="empty">Aún no hay tareas en esta lista.</div>`;
+        counterEl.textContent = "0 pendientes";
+        return;
+      }
+
+      sorted.forEach(item => {
+        const remaining = formatRemaining(item.dueAt);
+
         const li = document.createElement("li");
-        li.className = "item" + (it.done ? " done" : "");
-        li.dataset.id = it.id;
+        li.className = "item" + (item.done ? " done" : "");
 
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.checked = it.done;
-        cb.addEventListener("change", () => toggleItem(type, it.id));
+        li.innerHTML = `
+          <div class="item-row">
+            <div class="priority">${item.priority || "-"}</div>
+            <input class="check" type="checkbox" ${item.done ? "checked" : ""}>
+            <div class="task-main">
+              <div class="task-title">${escapeHtml(item.text)}</div>
+              <div class="task-sub">
+                <span>Entrega: ${formatDateTime(item.dueAt)}</span>
+                <span class="countdown ${remaining.className}">${remaining.text}</span>
+              </div>
+            </div>
+          </div>
+          <div class="item-row">
+            <div class="item-actions">
+              <button class="mini-btn mini-edit">Editar</button>
+              <button class="mini-btn mini-delete">Eliminar</button>
+              <button class="mini-btn mini-alarm">Reprogramar</button>
+            </div>
+          </div>
+        `;
 
-        const span = document.createElement("div");
-        span.className = "text";
-        span.textContent = it.text;
+        const checkbox = li.querySelector(".check");
+        const editBtn = li.querySelector(".mini-edit");
+        const deleteBtn = li.querySelector(".mini-delete");
+        const alarmBtn = li.querySelector(".mini-alarm");
 
-        const del = document.createElement("button");
-        del.className = "del";
-        del.type = "button";
-        del.textContent = "Eliminar";
-        del.addEventListener("click", () => removeItem(type, it.id));
+        checkbox.addEventListener("change", () => toggleItem(type, item.id));
+        editBtn.addEventListener("click", () => editItem(type, item.id));
+        deleteBtn.addEventListener("click", () => deleteItem(type, item.id));
+        alarmBtn.addEventListener("click", () => rescheduleItem(type, item.id));
 
-        li.appendChild(cb);
-        li.appendChild(span);
-        li.appendChild(del);
-
-        listElement.appendChild(li);
+        listEl.appendChild(li);
       });
 
       const pending = items.filter(i => !i.done).length;
-      counterElement.textContent = pending === 1 ? "1 pendiente" : `${pending} pendientes`;
+      counterEl.textContent = pending === 1 ? "1 pendiente" : `${pending} pendientes`;
     }
 
-    function addItem(type, text) {
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderAll() {
+      renderList("work", workItems, els.listWork, els.counterWork);
+      renderList("personal", personalItems, els.listPersonal, els.counterPersonal);
+      checkNotifications();
+    }
+
+    function getArray(type) {
+      return type === "work" ? workItems : personalItems;
+    }
+
+    function setArray(type, value) {
+      if (type === "work") {
+        workItems = value;
+        save(STORAGE.workItems, workItems);
+      } else {
+        personalItems = value;
+        save(STORAGE.personalItems, personalItems);
+      }
+    }
+
+    function addItem(type, text, priority, dateValue, timeValue, timerMinutes) {
       const clean = text.trim();
       if (!clean) return;
 
-      if (type === "work") {
-        workItems.unshift({ id: uid(), text: clean, done: false });
-        save(STORAGE_KEY_WORK, workItems);
-        renderAll();
-      }
+      const dueAt = parseDueAt(dateValue, timeValue, timerMinutes);
 
-      if (type === "personal") {
-        personalItems.unshift({ id: uid(), text: clean, done: false });
-        save(STORAGE_KEY_PERSONAL, personalItems);
-        renderAll();
-      }
-    }
+      const newItem = {
+        id: uid(),
+        text: clean,
+        priority: Number(priority) > 0 ? Number(priority) : getNextPriority(type),
+        done: false,
+        dueAt,
+        createdAt: Date.now(),
+        notified: false
+      };
 
-    function toggleItem(type, id) {
-      if (type === "work") {
-        workItems = workItems.map(i => i.id === id ? { ...i, done: !i.done } : i);
-        save(STORAGE_KEY_WORK, workItems);
-      }
-
-      if (type === "personal") {
-        personalItems = personalItems.map(i => i.id === id ? { ...i, done: !i.done } : i);
-        save(STORAGE_KEY_PERSONAL, personalItems);
-      }
-
+      const arr = getArray(type);
+      arr.unshift(newItem);
+      setArray(type, arr);
       renderAll();
     }
 
-    function removeItem(type, id) {
-      if (type === "work") {
-        workItems = workItems.filter(i => i.id !== id);
-        save(STORAGE_KEY_WORK, workItems);
+    function getNextPriority(type) {
+      const arr = getArray(type);
+      if (!arr.length) return 1;
+      return Math.max(...arr.map(i => Number(i.priority || 0))) + 1;
+    }
+
+    function toggleItem(type, id) {
+      const updated = getArray(type).map(i =>
+        i.id === id ? { ...i, done: !i.done } : i
+      );
+      setArray(type, updated);
+      renderAll();
+    }
+
+    function deleteItem(type, id) {
+      const ok = confirm("¿Deseas eliminar esta tarea?");
+      if (!ok) return;
+      const updated = getArray(type).filter(i => i.id !== id);
+      setArray(type, updated);
+      renderAll();
+    }
+
+    function editItem(type, id) {
+      const arr = getArray(type);
+      const item = arr.find(i => i.id === id);
+      if (!item) return;
+
+      const newText = prompt("Editar tarea:", item.text);
+      if (newText === null) return;
+
+      const newPriority = prompt("Editar número de prioridad:", item.priority ?? "");
+      if (newPriority === null) return;
+
+      const updated = arr.map(i =>
+        i.id === id
+          ? {
+              ...i,
+              text: newText.trim() || i.text,
+              priority: Number(newPriority) > 0 ? Number(newPriority) : i.priority
+            }
+          : i
+      );
+
+      setArray(type, updated);
+      renderAll();
+    }
+
+    function rescheduleItem(type, id) {
+      const arr = getArray(type);
+      const item = arr.find(i => i.id === id);
+      if (!item) return;
+
+      const mode = prompt(
+        "Escribe 1 para programar por fecha/hora o 2 para programar por minutos:",
+        "1"
+      );
+
+      if (mode === null) return;
+
+      let dueAt = item.dueAt;
+
+      if (mode === "1") {
+        const dateValue = prompt("Fecha (YYYY-MM-DD):", item.dueAt ? new Date(item.dueAt).toISOString().slice(0, 10) : "");
+        if (dateValue === null) return;
+        const timeValue = prompt("Hora (HH:MM):", item.dueAt ? new Date(item.dueAt).toTimeString().slice(0, 5) : "");
+        if (timeValue === null) return;
+        dueAt = parseDueAt(dateValue, timeValue, null);
+      } else if (mode === "2") {
+        const minutes = prompt("Minutos desde ahora:", "30");
+        if (minutes === null) return;
+        dueAt = parseDueAt(null, null, minutes);
       }
 
-      if (type === "personal") {
-        personalItems = personalItems.filter(i => i.id !== id);
-        save(STORAGE_KEY_PERSONAL, personalItems);
-      }
+      const updated = arr.map(i =>
+        i.id === id ? { ...i, dueAt, notified: false } : i
+      );
 
+      setArray(type, updated);
       renderAll();
     }
 
     function clearDone(type) {
-      if (type === "work") {
-        workItems = workItems.filter(i => !i.done);
-        save(STORAGE_KEY_WORK, workItems);
-      }
-
-      if (type === "personal") {
-        personalItems = personalItems.filter(i => !i.done);
-        save(STORAGE_KEY_PERSONAL, personalItems);
-      }
-
+      const updated = getArray(type).filter(i => !i.done);
+      setArray(type, updated);
       renderAll();
     }
 
     function clearAll(type) {
-      if (type === "work") {
-        workItems = [];
-        save(STORAGE_KEY_WORK, workItems);
-      }
-
-      if (type === "personal") {
-        personalItems = [];
-        save(STORAGE_KEY_PERSONAL, personalItems);
-      }
-
+      const ok = confirm("¿Deseas borrar toda la lista?");
+      if (!ok) return;
+      setArray(type, []);
       renderAll();
     }
 
-    function renderAll() {
-      renderList(workItems, listWork, counterWork, "work");
-      renderList(personalItems, listPersonal, counterPersonal, "personal");
+    function toggleSection(contentEl) {
+      contentEl.classList.toggle("hidden");
     }
 
-    addFormWork.addEventListener("submit", (e) => {
-      e.preventDefault();
-      addItem("work", taskInputWork.value);
-      taskInputWork.value = "";
-      taskInputWork.focus();
+    function renameButton(buttonEl, storageKey, fallbackText) {
+      const current = buttonEl.textContent.trim() || fallbackText;
+      const name = prompt("Escribe el nuevo nombre del botón:", current);
+      if (!name) return;
+      buttonEl.textContent = name.trim();
+      save(storageKey, name.trim());
+    }
+
+    function restoreButtonNames() {
+      const workLabel = load(STORAGE.workLabel);
+      const personalLabel = load(STORAGE.personalLabel);
+
+      if (typeof workLabel === "string" && workLabel.trim()) {
+        els.toggleWork.textContent = workLabel;
+      }
+      if (typeof personalLabel === "string" && personalLabel.trim()) {
+        els.togglePersonal.textContent = personalLabel;
+      }
+    }
+
+    async function enableNotifications() {
+      if (!("Notification" in window)) {
+        alert("Este navegador no soporta notificaciones.");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        alert("Notificaciones activadas.");
+      } else {
+        alert("No se concedió permiso para notificaciones.");
+      }
+    }
+
+    function checkNotifications() {
+      if (!("Notification" in window)) return;
+      if (Notification.permission !== "granted") return;
+
+      ["work", "personal"].forEach(type => {
+        const arr = getArray(type);
+        let changed = false;
+
+        arr.forEach(item => {
+          if (!item.done && item.dueAt && Date.now() >= item.dueAt && !item.notified) {
+            new Notification("CheckBlast 360", {
+              body: `Tarea vencida: ${item.text}`
+            });
+            item.notified = true;
+            changed = true;
+          }
+        });
+
+        if (changed) setArray(type, arr);
+      });
+    }
+
+    function closeSplash() {
+      els.splash.classList.add("hidden");
+    }
+
+    els.enterApp.addEventListener("click", closeSplash);
+    els.enableNotifications.addEventListener("click", enableNotifications);
+
+    els.toggleWork.addEventListener("click", () => toggleSection(els.contentWork));
+    els.togglePersonal.addEventListener("click", () => toggleSection(els.contentPersonal));
+
+    els.renameWork.addEventListener("click", () =>
+      renameButton(els.toggleWork, STORAGE.workLabel, "Checklist de trabajo")
+    );
+
+    els.renamePersonal.addEventListener("click", () =>
+      renameButton(els.togglePersonal, STORAGE.personalLabel, "Checklist personal")
+    );
+
+    els.addWork.addEventListener("click", () => {
+      addItem(
+        "work",
+        els.taskInputWork.value,
+        els.priorityWork.value,
+        els.dateWork.value,
+        els.timeWork.value,
+        els.timerWork.value
+      );
+      els.taskInputWork.value = "";
+      els.priorityWork.value = "";
+      els.dateWork.value = "";
+      els.timeWork.value = "";
+      els.timerWork.value = "";
+      els.taskInputWork.focus();
     });
 
-    addFormPersonal.addEventListener("submit", (e) => {
-      e.preventDefault();
-      addItem("personal", taskInputPersonal.value);
-      taskInputPersonal.value = "";
-      taskInputPersonal.focus();
+    els.addPersonal.addEventListener("click", () => {
+      addItem(
+        "personal",
+        els.taskInputPersonal.value,
+        els.priorityPersonal.value,
+        els.datePersonal.value,
+        els.timePersonal.value,
+        els.timerPersonal.value
+      );
+      els.taskInputPersonal.value = "";
+      els.priorityPersonal.value = "";
+      els.datePersonal.value = "";
+      els.timePersonal.value = "";
+      els.timerPersonal.value = "";
+      els.taskInputPersonal.focus();
     });
 
-    clearDoneWorkBtn.addEventListener("click", () => clearDone("work"));
-    clearAllWorkBtn.addEventListener("click", () => clearAll("work"));
+    els.clearDoneWork.addEventListener("click", () => clearDone("work"));
+    els.clearDonePersonal.addEventListener("click", () => clearDone("personal"));
+    els.clearAllWork.addEventListener("click", () => clearAll("work"));
+    els.clearAllPersonal.addEventListener("click", () => clearAll("personal"));
 
-    clearDonePersonalBtn.addEventListener("click", () => clearDone("personal"));
-    clearAllPersonalBtn.addEventListener("click", () => clearAll("personal"));
-
+    restoreButtonNames();
     renderAll();
-    taskInputWork.focus();
+    setInterval(renderAll, 30000);
   </script>
 </body>
 </html>
